@@ -8,7 +8,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Generate git diff since last push
+      - name: Generate git difference since last push
         run: |
             git log --pretty=format:"%h - %an, %ad : %s" --date=iso ${{ github.event.before }}..${{ github.sha }} > git.diff
             git diff --date=iso ${{ github.event.before }} ${{ github.sha }}  >> git.diff
