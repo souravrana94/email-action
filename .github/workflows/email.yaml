@@ -1,0 +1,26 @@
+name: change and email action
+on: push
+jobs:
+  first-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: fetch the code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Generate git diff since last push
+        run: |
+            git log --pretty=format:"%h - %an, %ad : %s" --date=iso ${{ github.event.before }}..${{ github.sha }} > git.diff
+            git diff --date=iso ${{ github.event.before }} ${{ github.sha }}  >> git.diff
+      - name: send notification 
+        uses: dawidd6/action-send-mail@v3
+        with: 
+          server_address: smtp.gmail.com
+          server_port: 587   
+          username: ${{ secrets.GMAIL_USERNAME }}
+          password: ${{ secrets.GMAIL_PASSWORD }}
+          subject: "Changes in the Repository"
+          body: file://git.diff
+          to: ranasourav83@gmail.com
+          from: ranasourav83@gmail.com
+          content_type: text/html
